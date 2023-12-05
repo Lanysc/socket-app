@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { socket } from './socket';
+import InputSubmit from './components/inputSubmit';
+import {v4 as uuid} from 'uuid'
 
+// interface IMessage {
+//   id: String;
+//   name: String;
+//   text: string;
+//   isOwner?: Boolean;
+// }
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -14,7 +23,35 @@ function Chat(props) {
   function handleLogoutClick() {
     navigate('/');
   }
+  const [socketInstance] = useState(socket());
 
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    socketInstance.on("message", (message) => {
+      setMessages( (prev) => [
+        ...prev, message
+      ])
+    });
+
+    return () =>{
+      socketInstance.off("message")
+    }
+  }, []);
+
+  const handleSubimit = (data) => {
+    const newMessage = {
+      text: data,
+      name: username,
+      id: uuid()
+    }
+    socketInstance.emit('message', newMessage)
+
+    setMessages( (prev) => [
+      ...prev,
+      {...newMessage, isOwner: true}
+    ])
+  }
 
   return (
     <div className="container chat-container">
@@ -23,15 +60,14 @@ function Chat(props) {
         <button type="button" className="logout btn-danger" id="logout" onClick={handleLogoutClick}>Sair</button>
       </div>
       <div className="chat-content">
-        <div className="message received"><strong>João:</strong> Ei, Maria! Você sabe responder a primeira questão sobre a camada de transporte?</div>
-        <div className="message sent"><strong>Maria:</strong> Sim, é sobre segmentação e reagrupamento dos dados. E a camada de transporte garante a entrega correta dos segmentos.</div>
-        <div className="message received"><strong>João:</strong> Entendi! E a questão sobre os protocolos TCP e UDP, eles pertencem a essa camada, certo?</div>
-        <div className="message sent"><strong>Maria:</strong> Isso mesmo! TCP é orientado à conexão e garante a entrega, enquanto o UDP é sem conexão e não garante a entrega dos pacotes.</div>
-        <div className="message received"><strong>João:</strong> Valeu, Maria! Você me salvou nessa prova.</div>
-        <div className="message sent"><strong>Maria:</strong> Sempre à disposição, João! Vamos nos ajudando e passando juntos.</div>
+        {messages.map((mensage) => (
+          <div key={mensage.id} className={`message ${mensage.isOwner ? 'sent' : 'received'}`}>
+            <strong>{mensage.name}:</strong>{mensage.text}
+          </div>
+        ))}
       </div>
       <div className="input-area">
-        <input className="form-control" type="text" placeholder="Digite a Mensagem" id="messageInput" />
+        <InputSubmit onSubmit={handleSubimit} />
       </div>
     </div>
   );

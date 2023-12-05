@@ -11,10 +11,11 @@ function Home(props) {
             <div className="row">
                 <select name="select_room" id="select_room">
                     <option value="-1"> Selecione a Sala</option>
-                    <option value="2"> Arquitetura e desenho de software</option>
-                    <option value="3"> Redes 1</option>
-                    <option value="4"> Redes 2</option>
-                    <option value="5"> IA </option>
+                    <option value="Arquitetura 1"> Arquitetura 1</option>
+                    <option value="Redes 1"> Redes 1</option>
+                    <option value="Redes 2"> Redes 2</option>
+                    <option value="AI"> AI </option>
+                    <option value="Sistamas Multimidia "> Sistamas Multimidia </option>
                 </select>
             </div>
 
