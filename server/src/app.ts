@@ -14,7 +14,7 @@ class app {
         this.socketIo = new Io(this.server, {cors: {origin: '*'}} );    
 
         this.socketIo.on('connection', socket => {
-            console.log('teste')
+            console.log('User connection')
 
             socket.on('disconnect', () => {
                 console.log("usuario desconectado")
@@ -22,6 +22,22 @@ class app {
 
             socket.on('message', (message) => {
                 socket.broadcast.emit('message',message )
+            })
+
+            socket.on('Redes 1', (message) => {
+                socket.broadcast.emit('Redes 1',message )
+            })
+
+            socket.on('Redes 2', (message) => {
+                socket.broadcast.emit('Redes 2',message )
+            })
+
+            socket.on('AI', (message) => {
+                socket.broadcast.emit('AI',message )
+            })
+
+            socket.on('Sistamas Multimidia', (message) => {
+                socket.broadcast.emit('Sistamas Multimidia',message )
             })
         });
     }

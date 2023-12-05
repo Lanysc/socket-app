@@ -19,6 +19,7 @@ function useQuery() {
 function Chat(props) {
   const query = useQuery();
   const username = query.get('username');
+  const room = query.get('select_room');
   const navigate = useNavigate();
   function handleLogoutClick() {
     navigate('/');
@@ -28,14 +29,14 @@ function Chat(props) {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    socketInstance.on("message", (message) => {
+    socketInstance.on(room, (message) => {
       setMessages( (prev) => [
         ...prev, message
       ])
     });
 
     return () =>{
-      socketInstance.off("message")
+      socketInstance.off(room)
     }
   }, []);
 
@@ -45,7 +46,7 @@ function Chat(props) {
       name: username,
       id: uuid()
     }
-    socketInstance.emit('message', newMessage)
+    socketInstance.emit(room, newMessage)
 
     setMessages( (prev) => [
       ...prev,
@@ -56,7 +57,7 @@ function Chat(props) {
   return (
     <div className="container chat-container">
       <div className="header">
-        <div id="username">Bem-vindo à sala, {username}!</div>
+        <div id="username">Bem-vindo à sala <strong>{room}</strong>, {username}!</div>
         <button type="button" className="logout btn-danger" id="logout" onClick={handleLogoutClick}>Sair</button>
       </div>
       <div className="chat-content">
