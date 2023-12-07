@@ -7,7 +7,7 @@ function Home(props) {
       <form action="chat">
         <div className="content">
             <h1>Cola Chat</h1>
-            <h3>Ajudando voçê em suas provas diarias</h3>
+            <h3>Ajudando você em suas provas diarias</h3>
             <div className="row">
                 <select name="select_room" id="select_room">
                     <option value="-1"> Selecione a Sala</option>
