@@ -13,7 +13,7 @@ body {
 }
 
 .container {
-  width: 100%;
+  margin: 1rem;
   max-width: 32rem;
 }
 
