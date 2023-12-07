@@ -21,12 +21,15 @@ function Chat(props) {
   const username = query.get('username');
   const room = query.get('select_room');
   const navigate = useNavigate();
+  var msg = "";
   function handleLogoutClick() {
     navigate('/');
   }
   const [socketInstance] = useState(socket());
 
   const [messages, setMessages] = useState([]);
+
+  const [messageText, setMessageText] = useState('');
 
   useEffect(() => {
     socketInstance.on(room, (message) => {
@@ -54,10 +57,21 @@ function Chat(props) {
     ])
   }
 
+  const handleButtonClick = () => {
+    if (messageText.trim() !== '') {
+      handleSubimit(messageText);
+      setMessageText(''); // Clear input after submission if needed
+    }
+  };
+
+  const handleChange = (data) => {
+    setMessageText(data);
+  }
+
   return (
     <div className="container chat-container">
       <div className="header">
-        <div id="username">Bem-vindo à sala <strong>{room}</strong>, {username}!</div>
+        <div className='boas-vindas' id="username">Bem-vindo à sala <strong>{room}</strong>, {username}!</div>
         <button type="button" className="logout btn-danger" id="logout" onClick={handleLogoutClick}>Sair</button>
       </div>
       <div className="chat-content">
@@ -67,8 +81,10 @@ function Chat(props) {
           </div>
         ))}
       </div>
-      <div className="input-area">
-        <InputSubmit onSubmit={handleSubimit} />
+      <div className='row-input'>
+        <div className="input-area col-10">
+          <InputSubmit onChange={handleChange} onSubmit={handleSubimit} />
+        </div>
       </div>
     </div>
   );
